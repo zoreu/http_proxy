@@ -1,4 +1,5 @@
 import asyncio
+import urllib.request
 
 async def forward(reader, writer):
     try:
@@ -94,9 +95,19 @@ async def handle_client(reader, writer):
         writer.close()
         await writer.wait_closed()
 
+def get_external_ip():
+    try:
+        with urllib.request.urlopen("https://api.ipify.org") as response:
+            return response.read().decode()
+    except Exception as e:
+        return f"Erro ao obter IP externo: {e}"
+
 async def main():
+    external_ip = get_external_ip()
+    print(f"Proxy async rodando na porta 7860...")
+    print(f"IP externo (visível na internet): {external_ip}")
+
     server = await asyncio.start_server(handle_client, '0.0.0.0', 7860)
-    print("Proxy async rodando na porta 7860...")
 
     async with server:
         await server.serve_forever()
