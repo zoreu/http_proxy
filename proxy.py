@@ -1,5 +1,9 @@
 import asyncio
 import urllib.request
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("proxy")
 
 async def forward(reader, writer):
     try:
@@ -104,8 +108,8 @@ def get_external_ip():
 
 async def main():
     external_ip = get_external_ip()
-    print(f"Proxy async rodando na porta 7860...")
-    print(f"IP externo (visível na internet): {external_ip}")
+    logger.info(f"Proxy async rodando na porta 7860...")
+    logger.info(f"IP externo: {external_ip}")
 
     server = await asyncio.start_server(handle_client, '0.0.0.0', 7860)
 
